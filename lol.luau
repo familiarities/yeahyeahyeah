@@ -314,7 +314,7 @@ RunService.Heartbeat:Connect(function()
 end)
 
 
-while task.wait(15) do
+while task.wait(5) do
     backend.update_targets()
     backend.update_bots()
 
