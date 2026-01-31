@@ -163,6 +163,7 @@ local_player.CharacterAdded:Connect(function(character)
     local humanoid = character:WaitForChild("Humanoid")
     local head = character:WaitForChild("Head")
 
+    task.wait(1)
     local godmode_track = humanoid:LoadAnimation(godmode_animation)
     godmode_track.Priority = Enum.AnimationPriority.Action3
     godmode_track:Play()
@@ -177,6 +178,7 @@ local_player.CharacterAdded:Connect(function(character)
     crying_track.Looped = true
 end)
 
+main_event:FireServer("ResetCharacter")
 
 RunService.Heartbeat:Connect(function()
     if not utilities.has_character(local_player) then
