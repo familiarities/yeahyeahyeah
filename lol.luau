@@ -1,17 +1,18 @@
---[[ 
-    Hood Customs Services
-]]
+
+
+local sethiddenproperty = function() end -- Codex is sooooo good
+local cloneref = cloneref or function(o) return o end
 
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.CreatorId ~= 15018995 then return end
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-local CoreGui = game:GetService("CoreGui")
-local NetworkClient = game:GetService("NetworkClient")
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local RunService = cloneref(game:GetService("RunService"))
+local Players = cloneref(game:GetService("Players"))
+local CoreGui = cloneref(game:GetService("CoreGui"))
+local NetworkClient = cloneref(game:GetService("NetworkClient"))
+local TeleportService = cloneref(game:GetService("TeleportService"))
+local HttpService = cloneref(game:GetService("HttpService"))
 
 local local_player = Players.LocalPlayer
 local data_folder = local_player:WaitForChild("DataFolder")
