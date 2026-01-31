@@ -156,7 +156,7 @@ end
 
 NetworkClient.ChildRemoved:Connect(function()
     status.Value = "connection lost — rejoining"
-    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, local_player)
+    TeleportService:Teleport(game.PlaceId, local_player)
 end)
 
 local_player.CharacterAdded:Connect(function(character)
