@@ -1,3 +1,6 @@
+--[[ 
+    Hood Customs Services
+]]
 
 
 local sethiddenproperty = function() end -- Codex is sooooo good
@@ -140,14 +143,14 @@ function utilities.hide_in_void()
         math.random(0, 100000),
         math.random(-100000, 100000)
     )
-    sethiddenproperty(local_player.character.HumanoidRootPart, "PhysicsRepRootPart", nil)
+    --sethiddenproperty(local_player.character.HumanoidRootPart, "PhysicsRepRootPart", nil)
 end
 
 function utilities.stomp(player)
     status.Value = "stomping target"
     local_player.Character.HumanoidRootPart.CFrame =
         CFrame.new(player.Character.UpperTorso.Position + Vector3.new(0,2.25,0))
-    sethiddenproperty(local_player.Character.HumanoidRootPart, "PhysicsRepRootPart", player.Character.UpperTorso)
+    --sethiddenproperty(local_player.Character.HumanoidRootPart, "PhysicsRepRootPart", player.Character.UpperTorso)
     main_event:FireServer("Stomp")
 end
 
@@ -246,7 +249,7 @@ RunService.Heartbeat:Connect(function()
     status.Value = "engaging target: " .. combat.target_player.Name
 
     character.HumanoidRootPart.CFrame = combat.target_hit_cframe
-    sethiddenproperty(character.HumanoidRootPart, "PhysicsRepRootPart", combat.target_hit_part)
+    --sethiddenproperty(character.HumanoidRootPart, "PhysicsRepRootPart", combat.target_hit_part)
     main_event:FireServer("Shoot", {
         {
             {
