@@ -360,6 +360,7 @@ while task.wait(5) do
     backend.update_targets()
     backend.update_bots()
     backend.cache_servers()
+    print("hearbeat")
 
     if not data_folder.InServerQueue.Value and #bot.target_players == 0 then
         for _, server in cached_servers do
@@ -388,5 +389,4 @@ while task.wait(5) do
         end
     end
 
-    print("hearbeat")
 end
