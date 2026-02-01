@@ -173,7 +173,7 @@ NetworkClient.ChildRemoved:Connect(function()
 
     for _, server in cached_servers do
         if server.JobId == current_job_id then continue end
-        if server.Playing >= server.MaxPlayers then continue end
+        if #server.PlayerIDS >= 35 then continue end
 
         local bot_in_server = false
         for _, bot_id in bot.bots do
@@ -366,7 +366,6 @@ while task.wait(5) do
     if not data_folder.InServerQueue.Value and #bot.target_players == 0 then
         for _, server in cached_servers do
             if server.JobId == current_job_id then continue end
-            if #server.PlayerIDs >= 30 then continue end
 
             local bot_in_server = false
             for _, bot_id in bot.bots do
