@@ -6,7 +6,7 @@ local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local RunService = cloneref(game:GetService("RunService"))
 local Players = cloneref(game:GetService("Players"))
 local CoreGui = cloneref(game:GetService("CoreGui"))
-local NetworkClient = cloneref(game:GetSe rvice("NetworkClient"))
+local NetworkClient = cloneref(game:GetService("NetworkClient"))
 local TeleportService = cloneref(game:GetService("TeleportService"))
 local HttpService = cloneref(game:GetService("HttpService"))
 
@@ -169,21 +169,6 @@ end
 NetworkClient.ChildRemoved:Connect(function()
     status.Value = "connection lost — selecting cached server"
 
-    for _, server in cached_servers do
-        if server.JobId == current_job_id then continue end
-        if #server.PlayerIDS >= 35 then continue end
-
-        status.Value = "teleporting to cached server"
-        TeleportService:TeleportToPlaceInstance(
-            game.PlaceId,
-            server.JobId,
-            local_player
-        )
-
-        return
-    end
-
-    status.Value = "no cached server — fallback teleport"
     TeleportService:Teleport(game.PlaceId, local_player)
 end)
 
