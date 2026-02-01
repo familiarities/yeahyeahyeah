@@ -1,5 +1,3 @@
-local sethiddenproperty = sethiddenproperty or function(instance, property, value) end
-local cloneref = cloneref or function(o) return o end
 
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.CreatorId ~= 15018995 then return end
@@ -8,7 +6,7 @@ local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local RunService = cloneref(game:GetService("RunService"))
 local Players = cloneref(game:GetService("Players"))
 local CoreGui = cloneref(game:GetService("CoreGui"))
-local NetworkClient = cloneref(game:GetService("NetworkClient"))
+local NetworkClient = cloneref(game:GetSe rvice("NetworkClient"))
 local TeleportService = cloneref(game:GetService("TeleportService"))
 local HttpService = cloneref(game:GetService("HttpService"))
 
@@ -389,4 +387,6 @@ while task.wait(5) do
             break
         end
     end
+
+    print("hearbeat")
 end
