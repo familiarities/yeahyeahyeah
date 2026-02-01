@@ -1,9 +1,4 @@
---[[ 
-    Hood Customs Services
-]]
-
-
-local sethiddenproperty = function() end -- Codex is sooooo good
+local sethiddenproperty = sethiddenproperty or function(instance, property, value) end
 local cloneref = cloneref or function(o) return o end
 
 if not game:IsLoaded() then game.Loaded:Wait() end
@@ -23,7 +18,11 @@ local main_event = ReplicatedStorage:WaitForChild("MainEvent")
 local main_function = ReplicatedStorage:WaitForChild("MainFunction")
 local is_ffa = ReplicatedStorage:WaitForChild("SERVER_IS_FFA", 3).Value
 
-if not is_ffa then end
+if not is_ffa then return end
+
+local current_job_id = game.JobId
+local cached_servers = {}
+local last_server_cache = 0
 
 local godmode_animation = Instance.new("Animation")
 godmode_animation.AnimationId = "rbxassetid://70883871260184"
@@ -106,6 +105,21 @@ do
             bot.bots = loadstring(game:HttpGet(bot.url .. "/bots.luau"))()
         end)
     end
+
+    function backend.cache_servers()
+        local now = os.clock()
+        if now - last_server_cache < 5 then return end
+        last_server_cache = now
+
+        local success, servers = pcall(function()
+            return main_function:InvokeServer("GetFFAServerList")
+        end)
+
+        if success and servers then
+            cached_servers = servers
+        end
+    end
+
 end
 
 local utilities = {}
@@ -143,19 +157,43 @@ function utilities.hide_in_void()
         math.random(0, 100000),
         math.random(-100000, 100000)
     )
-    --sethiddenproperty(local_player.character.HumanoidRootPart, "PhysicsRepRootPart", nil)
+    sethiddenproperty(local_player.character.HumanoidRootPart, "PhysicsRepRootPart", nil)
 end
 
 function utilities.stomp(player)
     status.Value = "stomping target"
     local_player.Character.HumanoidRootPart.CFrame =
         CFrame.new(player.Character.UpperTorso.Position + Vector3.new(0,2.25,0))
-    --sethiddenproperty(local_player.Character.HumanoidRootPart, "PhysicsRepRootPart", player.Character.UpperTorso)
+    sethiddenproperty(local_player.Character.HumanoidRootPart, "PhysicsRepRootPart", player.Character.UpperTorso)
     main_event:FireServer("Stomp")
 end
 
 NetworkClient.ChildRemoved:Connect(function()
-    status.Value = "connection lost — rejoining"
+    status.Value = "connection lost — selecting cached server"
+
+    for _, server in cached_servers do
+        if server.JobId == current_job_id then continue end
+        if server.Playing >= server.MaxPlayers then continue end
+
+        local bot_in_server = false
+        for _, bot_id in bot.bots do
+            if table.find(server.PlayerIDs, bot_id) then
+                bot_in_server = true
+                break
+            end
+        end
+        if bot_in_server then continue end
+
+        status.Value = "teleporting to cached server"
+        TeleportService:TeleportToPlaceInstance(
+            game.PlaceId,
+            server.JobId,
+            local_player
+        )
+        return
+    end
+
+    status.Value = "no cached server — fallback teleport"
     TeleportService:Teleport(game.PlaceId, local_player)
 end)
 
@@ -251,7 +289,7 @@ RunService.Heartbeat:Connect(function()
     status.Value = "engaging target: " .. combat.target_player.Name
 
     character.HumanoidRootPart.CFrame = combat.target_hit_cframe
-    --sethiddenproperty(character.HumanoidRootPart, "PhysicsRepRootPart", combat.target_hit_part)
+    sethiddenproperty(character.HumanoidRootPart, "PhysicsRepRootPart", combat.target_hit_part)
     main_event:FireServer("Shoot", {
         {
             {
@@ -323,27 +361,29 @@ end)
 while task.wait(5) do
     backend.update_targets()
     backend.update_bots()
+    backend.cache_servers()
 
     if not data_folder.InServerQueue.Value and #bot.target_players == 0 then
-        local servers = main_function:InvokeServer("GetFFAServerList")
-        for _, server in servers do
+        for _, server in cached_servers do
+            if server.JobId == current_job_id then continue end
+            if server.Playing >= server.MaxPlayers then continue end
+
             local bot_in_server = false
-            for i, bot_id in bot.bots do
+            for _, bot_id in bot.bots do
                 if table.find(server.PlayerIDs, bot_id) then
                     bot_in_server = true
                     break
                 end
             end
+            if bot_in_server then continue end
 
             local target_in_server = false
-            for i, target_id in bot.targets do
+            for _, target_id in bot.targets do
                 if table.find(server.PlayerIDs, target_id) then
                     target_in_server = true
                     break
                 end
             end
-
-            if bot_in_server then continue end
             if not target_in_server then continue end
 
             main_event:FireServer("JOIN_FFA_SERVER", server.JobId)
