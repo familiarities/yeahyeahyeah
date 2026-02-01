@@ -6,7 +6,7 @@ local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local RunService = cloneref(game:GetService("RunService"))
 local Players = cloneref(game:GetService("Players"))
 local CoreGui = cloneref(game:GetService("CoreGui"))
-local NetworkClient = cloneref(game:GetSe rvice("NetworkClient"))
+local NetworkClient = cloneref(game:GetService("NetworkClient"))
 local TeleportService = cloneref(game:GetService("TeleportService"))
 local HttpService = cloneref(game:GetService("HttpService"))
 
