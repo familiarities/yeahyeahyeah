@@ -6,7 +6,7 @@ local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local RunService = cloneref(game:GetService("RunService"))
 local Players = cloneref(game:GetService("Players"))
 local CoreGui = cloneref(game:GetService("CoreGui"))
-local NetworkClient = cloneref(game:GetService("NetworkClient"))
+local NetworkClient = cloneref(game:GetSe rvice("NetworkClient"))
 local TeleportService = cloneref(game:GetService("TeleportService"))
 local HttpService = cloneref(game:GetService("HttpService"))
 
@@ -173,21 +173,13 @@ NetworkClient.ChildRemoved:Connect(function()
         if server.JobId == current_job_id then continue end
         if #server.PlayerIDS >= 35 then continue end
 
-        local bot_in_server = false
-        for _, bot_id in bot.bots do
-            if table.find(server.PlayerIDs, bot_id) then
-                bot_in_server = true
-                break
-            end
-        end
-        if bot_in_server then continue end
-
         status.Value = "teleporting to cached server"
         TeleportService:TeleportToPlaceInstance(
             game.PlaceId,
             server.JobId,
             local_player
         )
+
         return
     end
 
